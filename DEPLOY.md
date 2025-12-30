@@ -1,6 +1,6 @@
 # Deploying SyncLane on Render
 
-SyncLane uses a SQLite database. To ensure your data isn't deleted every time the server restarts or deploys, you must configure a **Persistent Disk** on Render.
+SyncLane uses MongoDB for data persistence. You must configure the `MONGO_URI` environment variable on Render.
 
 ## Quick Start Commands
 
@@ -17,16 +17,8 @@ SyncLane uses a SQLite database. To ensure your data isn't deleted every time th
     -   **Build Command:** `npm install && npm run build && cd server && npm install`
     -   **Start Command:** `cd server && npm start`
 4.  **Environment Variables:**
-    -   `DB_PATH`: `/data/database.sqlite` (Required for persistence).
-    -   `API_KEY`: (Optional) Your Google Gemini API Key. If omitted, AI features will be disabled.
+    -   `MONGO_URI`: `mongodb+srv://sudhanshu:kt@2311@cluster0.v9pursh.mongodb.net/?appName=Cluster0` (Or your own MongoDB connection string).
+    -   `API_KEY`: (Optional) Your Google Gemini API Key.
 
-5.  **Add a Persistent Disk (CRITICAL)**
-    -   Go to the **Disks** tab in your service dashboard.
-    -   Click **Add Disk**.
-    -   **Name:** `sqlite-data`
-    -   **Mount Path:** `/data`
-    -   **Size:** 1 GB (Minimum is fine).
-
-    *Why?* Render's file system is ephemeral. If you don't mount a disk and save your database there, `database.sqlite` will be wiped on every deploy.
-
-6.  **Deploy!**
+5.  **Deploy!**
+    -   Render will automatically pick up the changes and deploy.

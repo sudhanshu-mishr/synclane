@@ -5,7 +5,7 @@ SyncLane is a multiplayer productivity workspace that blends high-performance Ka
 ## Tech Stack
 
 - **Frontend:** React, TypeScript, Vite, TailwindCSS, Framer Motion
-- **Backend:** Node.js, Express, SQLite (Sequelize)
+- **Backend:** Node.js, Express, MongoDB (Mongoose)
 - **AI:** Google Gemini (Optional)
 
 ## Getting Started
@@ -17,9 +17,13 @@ SyncLane is a multiplayer productivity workspace that blends high-performance Ka
     ```
 
 2.  **Environment Setup:**
-    -   Create `server/.env` (optional).
-    -   **Database:** The application uses SQLite. A `database.sqlite` file will be automatically created in the `server/` directory upon the first start. Data persists locally in this file.
-    -   **AI (Optional):** Add `API_KEY=your_gemini_api_key` to `server/.env` to enable AI features. If omitted, AI features will be disabled.
+    -   Create `server/.env`.
+    -   **Database:** Add `MONGO_URI` to `server/.env`.
+        ```env
+        MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=Cluster0
+        ```
+    -   If `MONGO_URI` is omitted, the app will use an in-memory MongoDB instance (data will be lost on restart).
+    -   **AI (Optional):** Add `API_KEY=your_gemini_api_key` to `server/.env` to enable AI features.
 
 3.  **Run the Application:**
     ```bash
@@ -37,4 +41,4 @@ SyncLane is a multiplayer productivity workspace that blends high-performance Ka
 -   **Multiplayer Kanban:** Real-time task management.
 -   **RPG Progression:** Earn XP, level up, and maintain streaks.
 -   **Clans:** Team-based productivity.
--   **AI Assistance:** Smart task suggestions and description enhancements (requires API key).
+-   **AI Assistance:** Smart task suggestions and description enhancements.
