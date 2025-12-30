@@ -1,47 +1,26 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../database.js';
+import mongoose from 'mongoose';
 
-export const Task = sequelize.define('Task', {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-    allowNull: false
-  },
-  title: {
-    type: DataTypes.STRING
-  },
-  description: {
-    type: DataTypes.STRING
-  },
+const TaskSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  title: String,
+  description: String,
   status: {
-    type: DataTypes.ENUM('todo', 'progress', 'review', 'done'),
-    defaultValue: 'todo'
+    type: String,
+    enum: ['todo', 'progress', 'review', 'done'],
+    default: 'todo'
   },
   priority: {
-    type: DataTypes.ENUM('low', 'medium', 'high'),
-    defaultValue: 'medium'
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
   },
-  assignee: {
-    type: DataTypes.STRING
-  },
-  clanId: {
-    type: DataTypes.STRING,
-    defaultValue: null
-  },
-  xpValue: {
-    type: DataTypes.INTEGER
-  },
-  createdAt: {
-    type: DataTypes.STRING
-  },
-  labels: {
-    type: DataTypes.JSON // SQLite stores this as TEXT
-  },
-  comments: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
-  },
-  position: {
-    type: DataTypes.INTEGER
-  }
+  assignee: String,
+  clanId: { type: String, default: null },
+  xpValue: Number,
+  createdAt: String,
+  labels: [String],
+  comments: { type: Number, default: 0 },
+  position: Number
 });
+
+export const Task = mongoose.model('Task', TaskSchema);
