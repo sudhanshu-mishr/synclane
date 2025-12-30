@@ -17,7 +17,9 @@ SyncLane uses MongoDB for data persistence. You must configure the `MONGO_URI` e
     -   **Build Command:** `npm install && npm run build && cd server && npm install`
     -   **Start Command:** `cd server && npm start`
 4.  **Environment Variables:**
-    -   `MONGO_URI`: `mongodb+srv://<user>:<password>@cluster0.v9pursh.mongodb.net/?appName=Cluster0` (Or your own MongoDB connection string).
+    -   `MONGO_URI`: Your MongoDB connection string.
+        -   **Important:** If your password contains special characters like `@`, you must URL encode them (e.g., `@` becomes `%40`).
+        -   **Example:** `mongodb+srv://user:pass%40word@cluster0.abcde.mongodb.net/?appName=Cluster0`
     -   `API_KEY`: (Optional) Your Google Gemini API Key.
 
 5.  **Deploy!**
