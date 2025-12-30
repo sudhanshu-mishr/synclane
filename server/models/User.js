@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
   level: { type: Number, default: 1 },
   streak: { type: Number, default: 0 },
   bio: String,
-  last_active_date: String
+  last_active_date: String,
+  clanId: { type: String, default: null } // Added to support future clan membership logic
 });
 
 export const User = mongoose.model('User', UserSchema);
