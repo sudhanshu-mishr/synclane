@@ -25,13 +25,11 @@ const asyncHandler = fn => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-// --- API ROUTES ---
-
 // --- USERS ---
 
 app.get('/api/users/:email', asyncHandler(async (req, res) => {
   const { email } = req.params;
-  const user = await User.findOne({ where: { email } });
+  const user = await User.findOne({ email });
   if (user) {
     res.json(user);
   } else {
@@ -41,7 +39,7 @@ app.get('/api/users/:email', asyncHandler(async (req, res) => {
 
 app.post('/api/auth/login', asyncHandler(async (req, res) => {
   const { name, email, avatar } = req.body;
-  let user = await User.findOne({ where: { email } });
+  let user = await User.findOne({ email });
 
   if (!user) {
     // Create new user
@@ -82,9 +80,8 @@ app.put('/api/users/:id', asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  let user = await User.findOne({ where: { id } });
+  const user = await User.findOneAndUpdate({ id }, updates, { new: true });
   if (user) {
-    await user.update(updates);
     res.json(user);
   } else {
     res.status(404).json({ error: 'User not found' });
@@ -94,7 +91,7 @@ app.put('/api/users/:id', asyncHandler(async (req, res) => {
 // --- CLANS ---
 
 app.get('/api/clans', asyncHandler(async (req, res) => {
-  const clans = await Clan.findAll();
+  const clans = await Clan.find();
   res.json(clans);
 }));
 
@@ -103,7 +100,7 @@ app.post('/api/clans', asyncHandler(async (req, res) => {
   const id = name.toLowerCase().replace(/\s+/g, '-');
 
   try {
-    const existing = await Clan.findOne({ where: { id } });
+    const existing = await Clan.findOne({ id });
     if (existing) {
         return res.status(400).json({ error: 'Clan already exists' });
     }
@@ -138,10 +135,7 @@ app.get('/api/tasks', asyncHandler(async (req, res) => {
   // Note: Previous logic filtered assignee implicitly via frontend context sometimes,
   // but if needed we can add `if (assignee) filter.assignee = assignee;`
 
-  const tasks = await Task.findAll({
-    where: filter,
-    order: [['position', 'ASC'], ['createdAt', 'DESC']]
-  });
+  const tasks = await Task.find(filter).sort({ position: 1, _id: -1 });
   res.json(tasks);
 }));
 
@@ -162,9 +156,8 @@ app.put('/api/tasks/:id', asyncHandler(async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
-  let task = await Task.findOne({ where: { id } });
+  const task = await Task.findOneAndUpdate({ id }, updates, { new: true });
   if (task) {
-    await task.update(updates);
     res.json(task);
   } else {
     res.status(404).json({ error: 'Task not found' });
@@ -173,7 +166,7 @@ app.put('/api/tasks/:id', asyncHandler(async (req, res) => {
 
 app.delete('/api/tasks/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
-    await Task.destroy({ where: { id } });
+    await Task.findOneAndDelete({ id });
     res.json({ success: true });
 }));
 
@@ -201,5 +194,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
