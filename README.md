@@ -5,7 +5,7 @@ SyncLane is a multiplayer productivity workspace that blends high-performance Ka
 ## Tech Stack
 
 - **Frontend:** React, TypeScript, Vite, TailwindCSS, Framer Motion
-- **Backend:** Node.js, Express, MongoDB (Mongoose)
+- **Backend:** Node.js, Express, SQLite (Sequelize)
 - **AI:** Google Gemini
 
 ## Getting Started
@@ -17,19 +17,18 @@ SyncLane is a multiplayer productivity workspace that blends high-performance Ka
     ```
 
 2.  **Environment Setup:**
-    -   Create `server/.env` and add your MongoDB connection string and Google API Key (optional):
+    -   Create `server/.env` and add your Google API Key (optional):
         ```env
-        MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=Cluster0
         API_KEY=your_gemini_api_key
         ```
-    -   If `MONGO_URI` is omitted, the app will use an in-memory MongoDB instance (data will be lost on restart).
+    -   **Database:** The application uses SQLite. A `database.sqlite` file will be automatically created in the `server/` directory upon the first start. Data persists locally in this file.
     -   If `API_KEY` is omitted, AI features will be disabled/mocked.
 
 3.  **Run the Application:**
     ```bash
     npm run dev
     ```
-    This will start both the backend (port 3000) and the frontend (port 3001) concurrently.
+    This will start both the backend (port 3000) and the frontend (port 5173 or similar) concurrently.
 
 4.  **Build:**
     ```bash
