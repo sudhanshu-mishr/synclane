@@ -17,8 +17,8 @@ SyncLane uses a SQLite database. To ensure your data isn't deleted every time th
     -   **Build Command:** `npm install && npm run build && cd server && npm install`
     -   **Start Command:** `cd server && npm start`
 4.  **Environment Variables:**
-    -   `API_KEY`: Your Google Gemini API Key.
-    -   `DB_PATH`: `/data/database.sqlite` (This tells the app to save the DB in the mounted disk folder).
+    -   `DB_PATH`: `/data/database.sqlite` (Required for persistence).
+    -   `API_KEY`: (Optional) Your Google Gemini API Key. If omitted, AI features will be disabled.
 
 5.  **Add a Persistent Disk (CRITICAL)**
     -   Go to the **Disks** tab in your service dashboard.
