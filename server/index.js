@@ -1,13 +1,18 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDb } from './database.js';
 import { User } from './models/User.js';
 import { Clan } from './models/Clan.js';
 import { Task } from './models/Task.js';
 import { suggestTaskContent, suggestTaskDescription } from './ai.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +24,8 @@ connectDb();
 const asyncHandler = fn => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
+
+// --- API ROUTES ---
 
 // --- USERS ---
 
@@ -184,6 +191,15 @@ app.post('/api/ai/suggest-description', asyncHandler(async (req, res) => {
     res.json({ description: result });
 }));
 
+// --- SERVE FRONTEND (Production) ---
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// Catch-all route to serve index.html for client-side routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

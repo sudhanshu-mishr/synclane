@@ -1,8 +1,14 @@
 import { Sequelize } from 'sequelize';
+import path from 'path';
+
+// Use DB_PATH environment variable if available, otherwise default to local file
+const storagePath = process.env.DB_PATH || './database.sqlite';
+
+console.log(`Using database storage at: ${storagePath}`);
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite',
+  storage: storagePath,
   logging: false // Set to console.log to see SQL queries
 });
 
