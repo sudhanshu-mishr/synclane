@@ -1,28 +1,47 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database.js';
 
-const TaskSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  title: String,
-  description: String,
+export const Task = sequelize.define('Task', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    allowNull: false
+  },
+  title: {
+    type: DataTypes.STRING
+  },
+  description: {
+    type: DataTypes.STRING
+  },
   status: {
-    type: String,
-    enum: ['todo', 'progress', 'review', 'done'],
-    default: 'todo'
+    type: DataTypes.ENUM('todo', 'progress', 'review', 'done'),
+    defaultValue: 'todo'
   },
   priority: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
+    type: DataTypes.ENUM('low', 'medium', 'high'),
+    defaultValue: 'medium'
   },
-  assignee: String,
-  clanId: { type: String, default: null }, // Using clanId (camelCase) to match frontend, or stick to snake_case?
-  // Previous SQL used clan_id. Frontend sends clanId.
-  // Mongoose allows us to map easily. Let's use clanId to match JS objects.
-  xpValue: Number,
-  createdAt: String,
-  labels: [String],
-  comments: { type: Number, default: 0 },
-  position: Number
+  assignee: {
+    type: DataTypes.STRING
+  },
+  clanId: {
+    type: DataTypes.STRING,
+    defaultValue: null
+  },
+  xpValue: {
+    type: DataTypes.INTEGER
+  },
+  createdAt: {
+    type: DataTypes.STRING
+  },
+  labels: {
+    type: DataTypes.JSON // SQLite stores this as TEXT
+  },
+  comments: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  position: {
+    type: DataTypes.INTEGER
+  }
 });
-
-export const Task = mongoose.model('Task', TaskSchema);

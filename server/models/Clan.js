@@ -1,11 +1,26 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database.js';
 
-const ClanSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  level: { type: Number, default: 1 },
-  xp: { type: Number, default: 0 },
-  members: { type: Number, default: 1 }
+export const Clan = sequelize.define('Clan', {
+  id: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    allowNull: false
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  level: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1
+  },
+  xp: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  members: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1
+  }
 });
-
-export const Clan = mongoose.model('Clan', ClanSchema);
