@@ -70,8 +70,11 @@ app.post('/api/auth/login', asyncHandler(async (req, res) => {
         user.streak = 1;
       }
       user.last_active_date = today;
-      await user.save();
     }
+    // Update basic info on login to keep it fresh
+    user.name = name;
+    user.avatar = avatar;
+    await user.save();
   }
   res.json(user);
 }));
@@ -146,7 +149,7 @@ app.post('/api/tasks', asyncHandler(async (req, res) => {
   const task = await Task.create({
       ...taskData,
       id,
-      clanId: taskData.clanId || null // Ensure null if undefined/empty
+      clanId: taskData.clanId ? taskData.clanId : null // Ensure strict null if undefined/empty string
   });
 
   res.json(task);
