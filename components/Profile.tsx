@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Zap, Flame, Award, LogOut, Camera, Target, Star, Shield, TrendingUp, Users, Edit3 } from 'lucide-react';
+import { Zap, Target, Star, Shield, TrendingUp, Users, Edit3, LogOut, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { User } from '../types';
+import { api } from '../services/api';
 
 interface ProfileProps {
   user: User;
@@ -11,6 +12,12 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
+  const [leaderboard, setLeaderboard] = useState<User[]>([]);
+
+  useEffect(() => {
+    api.getLeaderboard().then(setLeaderboard).catch(console.error);
+  }, []);
+
   // User data is now fed from App state which is synced with API
   const xpProgress = (user.xp % 1000) / 10;
   const levelBracket = Math.floor(user.level / 10);
@@ -21,12 +28,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
     { label: 'Weekly XP', value: '2,450', icon: Zap, color: 'text-primary' },
     { label: 'Efficiency', value: '94%', icon: TrendingUp, color: 'text-emerald-500' },
     { label: 'Active Missions', value: '12', icon: Target, color: 'text-rose-500' },
-  ];
-
-  const leaderboard = [
-    { name: 'Sarah Chen', level: 12, xp: '12.4k', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah', rank: 1 },
-    { name: 'Alex Player (You)', level: user.level, xp: `${(user.xp / 1000).toFixed(1)}k`, avatar: user.avatar, rank: 2, isMe: true },
-    { name: 'Jordan Smith', level: 4, xp: '4.2k', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=jordan', rank: 3 },
   ];
 
   return (
@@ -104,7 +105,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
         {/* Right Column: Stats & Progression */}
         <div className="lg:col-span-2 space-y-10">
 
-          {/* Stats Bar */}
+          {/* Stats Bar (Still Mocked for now as we don't have task analytics backend) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {stats.map(s => (
               <div key={s.label} className="bg-theme-surface border border-theme-border rounded-3xl p-6 flex flex-col items-center text-center shadow-sm hover:translate-y-[-2px] transition-all">
@@ -139,36 +140,39 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout }) => {
             </div>
           </section>
 
-          {/* Leaderboard */}
+          {/* Leaderboard - Now Real! */}
           <section className="bg-theme-surface border border-theme-border rounded-[2rem] p-8">
             <div className="flex items-center gap-3 mb-8">
                <Users className="text-primary" size={20} />
                <h3 className="text-xs font-black uppercase tracking-widest text-theme-text">Sync League Standings</h3>
             </div>
             <div className="space-y-4">
-               {leaderboard.map(entry => (
-                 <div
-                   key={entry.name}
-                   className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
-                    entry.isMe ? 'bg-primary/5 border-primary shadow-sm' : 'bg-theme-page border-theme-border'
-                   }`}
-                 >
-                   <div className="flex items-center gap-4">
-                      <div className="w-6 text-[10px] font-black text-theme-muted">#{entry.rank}</div>
-                      <img src={entry.avatar} className="w-10 h-10 rounded-full border-2 border-theme-border" alt="p" />
-                      <div>
-                        <div className="text-sm font-black text-theme-text">{entry.name}</div>
-                        <div className="text-[9px] font-bold text-theme-muted">Ranked Division {entry.level > 10 ? 'Elite' : 'Alpha'}</div>
-                      </div>
+               {leaderboard.map((entry, index) => {
+                 const isMe = entry.email === user.email; // Identify current user
+                 return (
+                   <div
+                     key={entry.email}
+                     className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                      isMe ? 'bg-primary/5 border-primary shadow-sm' : 'bg-theme-page border-theme-border'
+                     }`}
+                   >
+                     <div className="flex items-center gap-4">
+                        <div className="w-6 text-[10px] font-black text-theme-muted">#{index + 1}</div>
+                        <img src={entry.avatar} className="w-10 h-10 rounded-full border-2 border-theme-border" alt="p" />
+                        <div>
+                          <div className="text-sm font-black text-theme-text">{entry.name}</div>
+                          <div className="text-[9px] font-bold text-theme-muted">Ranked Division {entry.level > 10 ? 'Elite' : 'Alpha'}</div>
+                        </div>
+                     </div>
+                     <div className="text-right">
+                        <div className="text-sm font-black text-primary">{(entry.xp / 1000).toFixed(1)}k XP</div>
+                        <div className="text-[9px] font-bold text-theme-muted">Lvl {entry.level}</div>
+                     </div>
                    </div>
-                   <div className="text-right">
-                      <div className="text-sm font-black text-primary">{entry.xp} XP</div>
-                      <div className="text-[9px] font-bold text-theme-muted">Lvl {entry.level}</div>
-                   </div>
-                 </div>
-               ))}
+                 );
+               })}
             </div>
-            <button className="w-full mt-6 py-3 text-[10px] font-black uppercase tracking-widest text-theme-muted hover:text-primary transition-colors">View Global Leaderboard</button>
+            {leaderboard.length === 0 && <p className="text-center text-xs text-theme-muted">Loading standings...</p>}
           </section>
         </div>
       </div>

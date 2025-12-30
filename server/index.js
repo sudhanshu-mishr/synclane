@@ -37,6 +37,12 @@ app.get('/api/users/:email', asyncHandler(async (req, res) => {
   }
 }));
 
+app.get('/api/users', asyncHandler(async (req, res) => {
+  // Return top 10 users by XP
+  const users = await User.find().sort({ xp: -1 }).limit(10);
+  res.json(users);
+}));
+
 app.post('/api/auth/login', asyncHandler(async (req, res) => {
   const { name, email, avatar } = req.body;
   let user = await User.findOne({ email });

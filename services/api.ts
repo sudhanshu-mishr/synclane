@@ -22,6 +22,12 @@ export const api = {
     return res.json();
   },
 
+  getLeaderboard: async (): Promise<User[]> => {
+    const res = await fetch('/api/users');
+    if (!res.ok) throw new Error('Failed to fetch leaderboard');
+    return res.json();
+  },
+
   // Clans
   getClans: async (): Promise<Clan[]> => {
     const res = await fetch('/api/clans');
