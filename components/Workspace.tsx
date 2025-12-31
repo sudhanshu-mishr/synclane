@@ -29,7 +29,7 @@ const Workspace: React.FC<{ user: User; onGainXP: (amount: number) => void }> = 
 
   useEffect(() => {
     loadTasks();
-  }, [context]);
+  }, [context, user.id]);
 
   const loadTasks = async () => {
       try {
