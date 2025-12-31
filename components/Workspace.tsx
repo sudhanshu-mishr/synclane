@@ -34,7 +34,9 @@ const Workspace: React.FC<{ user: User; onGainXP: (amount: number) => void }> = 
   const loadTasks = async () => {
       try {
           const clanId = isPersonal ? 'me' : context;
-          const fetchedTasks = await api.getTasks(clanId);
+          // If personal, filter by user name to ensure privacy
+          const assignee = isPersonal ? user.name : undefined;
+          const fetchedTasks = await api.getTasks(clanId, assignee);
           setTasks(fetchedTasks);
       } catch (err) {
           console.error("Failed to load tasks", err);
@@ -58,7 +60,9 @@ const Workspace: React.FC<{ user: User; onGainXP: (amount: number) => void }> = 
       priority: 'medium',
       xpValue: 15,
       createdAt: new Date().toISOString(),
-      clanId: isPersonal ? null : (context || null)
+      clanId: isPersonal ? null : (context || null),
+      // Assign to current user if personal workspace
+      assignee: isPersonal ? user.name : undefined
     };
 
     try {

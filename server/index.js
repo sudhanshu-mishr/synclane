@@ -136,13 +136,19 @@ app.get('/api/tasks', asyncHandler(async (req, res) => {
   if (clanId) {
     if (clanId === 'me') {
         filter.clanId = null;
+        // For personal workspace, we MUST filter by assignee to ensure privacy
+        if (assignee) {
+          filter.assignee = assignee;
+        }
     } else {
         filter.clanId = clanId;
     }
   }
 
-  // Note: Previous logic filtered assignee implicitly via frontend context sometimes,
-  // but if needed we can add `if (assignee) filter.assignee = assignee;`
+  // Allow explicit assignee filtering for any context if provided
+  if (assignee && !filter.assignee) {
+     filter.assignee = assignee;
+  }
 
   const tasks = await Task.find(filter).sort({ position: 1, _id: -1 });
   res.json(tasks);
