@@ -46,10 +46,11 @@ export const api = {
   },
 
   // Tasks
-  getTasks: async (clanId?: string, assignee?: string): Promise<Task[]> => {
+  getTasks: async (clanId?: string, assignee?: string, ownerId?: string): Promise<Task[]> => {
     const params = new URLSearchParams();
     if (clanId) params.append('clanId', clanId);
     if (assignee) params.append('assignee', assignee);
+    if (ownerId) params.append('ownerId', ownerId);
 
     const res = await fetch(`/api/tasks?${params.toString()}`);
     if (!res.ok) throw new Error('Failed to fetch tasks');

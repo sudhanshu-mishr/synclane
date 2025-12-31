@@ -15,6 +15,7 @@ const TaskSchema = new mongoose.Schema({
     default: 'medium'
   },
   assignee: String,
+  ownerId: { type: String, default: null }, // Explicit ownership for personal tasks
   clanId: { type: String, default: null },
   xpValue: Number,
   createdAt: String,

@@ -130,23 +130,24 @@ app.post('/api/clans', asyncHandler(async (req, res) => {
 // --- TASKS ---
 
 app.get('/api/tasks', asyncHandler(async (req, res) => {
-  const { clanId, assignee } = req.query;
+  const { clanId, assignee, ownerId } = req.query;
   const filter = {};
 
   if (clanId) {
     if (clanId === 'me') {
         filter.clanId = null;
-        // For personal workspace, we MUST filter by assignee to ensure privacy
-        if (assignee) {
-          filter.assignee = assignee;
+        // STRICT ISOLATION: For personal workspace, ownerId is MANDATORY
+        if (!ownerId) {
+          return res.json([]); // Return empty if no owner specified to prevent leakage
         }
+        filter.ownerId = ownerId;
     } else {
         filter.clanId = clanId;
     }
   }
 
-  // Allow explicit assignee filtering for any context if provided
-  if (assignee && !filter.assignee) {
+  // Optional: Allow filtering by assignee as well
+  if (assignee) {
      filter.assignee = assignee;
   }
 
@@ -161,7 +162,8 @@ app.post('/api/tasks', asyncHandler(async (req, res) => {
   const task = await Task.create({
       ...taskData,
       id,
-      clanId: taskData.clanId ? taskData.clanId : null // Ensure strict null if undefined/empty string
+      clanId: taskData.clanId ? taskData.clanId : null,
+      ownerId: taskData.ownerId || null
   });
 
   res.json(task);
