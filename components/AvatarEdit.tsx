@@ -42,6 +42,7 @@ const AvatarEdit: React.FC<AvatarEditProps> = ({ user, onUpdate }) => {
     `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}`;
 
   const handleSave = async () => {
+    const selectedAvatar = getAvatarUrl(currentSeed, currentStyle);
     await onUpdate({ avatar: selectedAvatar });
     navigate('/profile');
   };
